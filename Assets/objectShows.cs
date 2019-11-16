@@ -136,6 +136,11 @@ public class objectShows : MonoBehaviour
       if (chosencharacters[Array.IndexOf(buttons, button)] != solution[stage])
       {
         GetComponent<KMBombModule>().HandleStrike();
+        var si =  UnityEngine.Random.Range(0,2);
+        if (si == 0)
+          Audio.PlaySoundAtTransform("strike1", button.transform);
+        else
+          Audio.PlaySoundAtTransform("strike2", button.transform);
         Debug.LogFormat("[Object Shows #{0}] Strike! Resetting...", moduleId);
         Start();
       }
@@ -146,6 +151,7 @@ public class objectShows : MonoBehaviour
         if (stage == 5)
         {
           GetComponent<KMBombModule>().HandlePass();
+          Audio.PlaySoundAtTransform("solve1", button.transform);
           Debug.LogFormat("[Object Shows #{0}] Module solved.", moduleId);
         }
         else if (stage == 4)
