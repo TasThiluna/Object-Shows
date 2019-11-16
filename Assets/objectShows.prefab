@@ -1680,9 +1680,39 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 31605409bee6eb74695d53ffadb73161, type: 2}
   - {fileID: 2100000, guid: 2d13a1cf48fa33644a3752dbdf5a08f8, type: 2}
   - {fileID: 2100000, guid: 69bcf81892411f34ca2f765d73e0268f, type: 2}
-  othermats:
-  - {fileID: 0}
+  othermats: []
   maintext: {fileID: 102702636277831710}
+  charnames:
+  - Battleship
+  - Beer
+  - Big Circle
+  - Black Hole
+  - Block
+  - Bulb
+  - Calendar
+  - Clock
+  - Combination Lock
+  - Cookie Jar
+  - Domino
+  - Fidget Spinner
+  - Hypercube
+  - Ice Cream
+  - iPhone
+  - Jack O' Lantern
+  - Lego
+  - Moon
+  - Necronomicon
+  - Paint Brush
+  - Radio
+  - Resistor
+  - Rubik's Clock
+  - Rubik's Cube
+  - Snooker Ball
+  - Sphere
+  - Sticky Note
+  - Stopwatch
+  - Sun
+  - Tennis Racket
 --- !u!114 &114796954165295098
 MonoBehaviour:
   m_ObjectHideFlags: 1

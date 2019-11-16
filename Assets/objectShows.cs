@@ -18,18 +18,19 @@ public class objectShows : MonoBehaviour
     public TextMesh maintext;
 
     private static readonly string[] contestnames = new string[16] {"wipeout", "underwater basket weaving", "water balloon fight", "cave diving", "chariot race", "equestrian acrobatics", "gladiatorial fight", "the objective games", "escape the volcano", "jungle survival", "tiger taming", "cliff climbing", "sack race", "interpretive dance", "nose nabbing", "calvinball" };
-    private static readonly string[] ordinals = new string[5] {"first", "second", "third", "fourth", "fifth"};
+    private static readonly string[] ordinals = new string[6] {"first", "second", "third", "fourth", "fifth", "sixth"};
+    private static readonly string[] placementordinals = new string[6] {"last", "fifth", "fourth", "third", "second", "first"};
     private static readonly string[] charlists = new string[4] {"KI68QU9ZCPDSJMEVRAT1X53B427HLG0FWN", "CXD7SVI0NUTLJMQHERF45G2986P31KWZAB", "BMVF31QZ04SJ5GIW7H6A2EPRLNTKUDC98X", "MWC509QI31NSJB2FHUDXZ6PLV7TK8G4ERA"};
+    public string[] charnames;
 
     private int startingtime;
     private int startingday;
     private int stage;
     private int typeindex;
     private int styleindex;
-    private int[] solution;
+    private Contestant[] solution;
     private int[] publicappeals = new int[30];
-    private int[] relevantpublicappeals = new int[6];
-    private List <int> chosencharacters = new List <int>();
+    private List <Contestant> chosencharacters = new List <Contestant>();
 
 		static int moduleIdCounter = 1;
 		int moduleId;
@@ -42,6 +43,10 @@ public class objectShows : MonoBehaviour
         startingday = (int)DateTime.Now.DayOfWeek;
         if (startingday == 0)
           startingday = 7;
+        foreach (KMSelectable button in buttons)
+        {
+          button.OnInteract += delegate () { buttonPress(button); return false; };
+        }
 		}
 
 		void Start()
@@ -60,53 +65,92 @@ public class objectShows : MonoBehaviour
       for(int i = 0; i < 6; i++)
       {
         index = UnityEngine.Random.Range(0,30);
-        while(chosencharacters.Contains(index))
+        while(chosencharacters.Any(chr => chr.id == index))
           index = UnityEngine.Random.Range(0,30);
-        chosencharacters.Add(index);
+        var character = new Contestant { id = index, pos = i, scores = new int[5], appeal = publicappeals[index] };
+        while (chosencharacters.Any(chr => chr.appeal == character.appeal))
+          character.appeal++;
+        chosencharacters.Add(character);
         buttonrenders[i].material = charactermats[index];
-        relevantpublicappeals[i] = publicappeals[index];
+        Debug.LogFormat("[Object Shows #{0}] the {2} character is {1}.", moduleId, charnames[index], ordinals[i]);
 		  }
+    }
+
+    class Contestant
+    {
+      public int id;
+      public int pos;
+      public int[] scores;
+      public int appeal;
     }
 
     void getSolution()
     {
-      var ser = bomb.GetSerialNumber();
-      solution = new int[5];
+      var ser = bomb.GetSerialNumber().ToCharArray();
+      var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      for (int i = 0; i < 6; i++)
+        while (ser.Take(i).Contains(ser[i]))
+          ser[i] = alphabet[(alphabet.IndexOf(ser[i]) + 1) % 36];
+      var currentcharacters = chosencharacters.ToList();
+      solution = new Contestant[5];
       for (int i = 0; i < 5; i++)
       {
           typeindex = rnd.Range(0,4);
           styleindex = rnd.Range(0,4);
-          Debug.LogFormat("[Object Shows #{0}] the {2} contest is {1}.", moduleId, contestnames[styleindex * 4 + typeindex], ordinals[i]);
-          var scores = new List <int>(chosencharacters.Count);
-          for (int j = 0; j < chosencharacters.Count; j++)
-            scores.Add(charlists[typeindex].IndexOf(ser[j]));
-          var sortedscores = scores.ToList();
-          if ( i == 0)
+          if (i != 4)
+            Debug.LogFormat("[Object Shows #{0}] the {2} contest is {1}.", moduleId, contestnames[styleindex * 4 + typeindex], ordinals[i]);
+          for (int j = 0; j < currentcharacters.Count; j++)
+            currentcharacters[j].scores[i] = charlists[typeindex].IndexOf(ser[j]);
+          var sortedcharacters = currentcharacters.OrderBy(chr => chr.scores[i]).ToList();
+          if (styleindex == 2 || styleindex == 3)
+            sortedcharacters.Reverse();
+          if (i < 3)
           {
-            var ufe = sortedscores.Take(3);
-            var scoringpubs = new int[3];
-          //solution[i] =
-          }
-          else if (i == 1 || i == 2)
-          {
-            var ufe = sortedscores.Take(2);
-            //solution[i] =
+            var lowestappeal = sortedcharacters.Take(i == 0 ? 3 : 2).Min(chr => chr.appeal);
+            solution[i] = currentcharacters.First(chr => chr.appeal == lowestappeal);
           }
           else if (i == 3)
-          {
-            //solution[i] = scores.IndexOf(sortedscores.First());
-          }
+            solution[i] = sortedcharacters[0];
           else
           {
-            //solution[i] =
+            var lowestappeal = sortedcharacters.Min(chr => chr.appeal);
+            solution[i] = currentcharacters.First(chr => chr.appeal == lowestappeal);
           }
+          currentcharacters.Remove(solution[i]);
+          Debug.LogFormat("[Object Shows #{0}] the character in {2} place is {1}.", moduleId, charnames[solution[i].id], placementordinals[i]);
+      }
+    }
+
+    void buttonPress(KMSelectable button)
+    {
+      if (chosencharacters[Array.IndexOf(buttons, button)] != solution[stage])
+      {
+        GetComponent<KMBombModule>().HandleStrike();
+        Debug.LogFormat("[Object Shows #{0}] Strike! Resetting...", moduleId);
+        Start();
+      }
+      else
+      {
+        stage++;
+        if (stage == 5)
+        {
+          GetComponent<KMBombModule>().HandlePass();
+          Debug.LogFormat("[Object Shows #{0}] Module solved.", moduleId);
+        }
+        else if (stage == 4)
+        {
+          //remove the contest text
+        }
+        else
+        {
+          //change the contest text
+        }
       }
     }
 
     void getAppeals()
     {
       var ser = bomb.GetSerialNumber();
-      var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       publicappeals[0] = (bomb.GetBatteryCount() + bomb.GetIndicators().Count()) % 7; //Battleship
       publicappeals[1] = bomb.GetModuleNames().Count() - bomb.GetSolvableModuleNames().Count(); //Beer
       publicappeals[2] = bomb.GetPortCount(Port.Parallel) + bomb.GetPortCount(Port.DVI); //Big Circle
