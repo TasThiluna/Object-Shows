@@ -12,10 +12,11 @@ public class objectShows : MonoBehaviour
 		public KMBombInfo bomb;
 
     public KMSelectable[] buttons;
+    public Texture[] contesttextures;
     public Renderer[] buttonrenders;
     public Material[] charactermats;
     public Material[] othermats;
-    public TextMesh maintext;
+    public Renderer contestname;
 
     private static readonly string[] contestnames = new string[16] {"wipeout", "underwater basket weaving", "water balloon fight", "cave diving", "chariot race", "equestrian acrobatics", "gladiatorial fight", "the objective games", "escape the volcano", "jungle survival", "tiger taming", "cliff climbing", "sack race", "interpretive dance", "nose nabbing", "calvinball" };
     private static readonly string[] ordinals = new string[6] {"first", "second", "third", "fourth", "fifth", "sixth"};
@@ -31,6 +32,7 @@ public class objectShows : MonoBehaviour
     private Contestant[] solution;
     private int[] publicappeals = new int[30];
     private List <Contestant> chosencharacters = new List <Contestant>();
+    private List <int> contests = new List <int>();
 
 		static int moduleIdCounter = 1;
 		int moduleId;
@@ -51,11 +53,15 @@ public class objectShows : MonoBehaviour
 
 		void Start()
 		{
+      for (int i = 0; i < 6; i++)
+        buttons[i].gameObject.SetActive(true);
+      contestname.gameObject.SetActive(true);
       chosencharacters.Clear();
       stage = 0;
       getAppeals();
       pickCharacters();
       getSolution();
+      contestname.material.mainTexture = contesttextures[contests[stage]];
     }
 
     void pickCharacters()
@@ -72,7 +78,7 @@ public class objectShows : MonoBehaviour
           character.appeal++;
         chosencharacters.Add(character);
         buttonrenders[i].material = charactermats[index];
-        Debug.LogFormat("[Object Shows #{0}] the {2} character is {1}.", moduleId, charnames[index], ordinals[i]);
+        Debug.LogFormat("[Object Shows #{0}] the {2} character is {1}, who has a public appeal of {3}.", moduleId, charnames[index], ordinals[i], character.appeal);
 		  }
     }
 
@@ -98,7 +104,10 @@ public class objectShows : MonoBehaviour
           typeindex = rnd.Range(0,4);
           styleindex = rnd.Range(0,4);
           if (i != 4)
+          {
             Debug.LogFormat("[Object Shows #{0}] the {2} contest is {1}.", moduleId, contestnames[styleindex * 4 + typeindex], ordinals[i]);
+            contests.Add(styleindex * 4 + typeindex);
+          }
           for (int j = 0; j < currentcharacters.Count; j++)
             currentcharacters[j].scores[i] = charlists[typeindex].IndexOf(ser[j]);
           var sortedcharacters = currentcharacters.OrderBy(chr => chr.scores[i]).ToList();
@@ -123,6 +132,7 @@ public class objectShows : MonoBehaviour
 
     void buttonPress(KMSelectable button)
     {
+      button.AddInteractionPunch(.5f);
       if (chosencharacters[Array.IndexOf(buttons, button)] != solution[stage])
       {
         GetComponent<KMBombModule>().HandleStrike();
@@ -131,6 +141,7 @@ public class objectShows : MonoBehaviour
       }
       else
       {
+        button.gameObject.SetActive(false);
         stage++;
         if (stage == 5)
         {
@@ -139,11 +150,13 @@ public class objectShows : MonoBehaviour
         }
         else if (stage == 4)
         {
-          //remove the contest text
+          contestname.gameObject.SetActive(false);
+          Audio.PlaySoundAtTransform("elimination", button.transform);
         }
         else
         {
-          //change the contest text
+          contestname.material.mainTexture = contesttextures[contests[stage]];
+          Audio.PlaySoundAtTransform("elimination", button.transform);
         }
       }
     }
