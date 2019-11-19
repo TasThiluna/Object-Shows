@@ -14,7 +14,15 @@ MonoBehaviour:
   id: objectShows
   title: Object Shows
   author: TasThing
-  description: 
+  description: 'According to my imagination, 99.8% of all bombs are detonated within
+    2 seconds of being started!
+
+
+    Module idea and implementation by TasThing.
+
+    Based on BFDI.
+
+    Thanks to EpicToast for the contestant graphics.'
   version: 
   outputFolder: build
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 2800000, guid: fb5c3b538499a92428ce7013da79e056, type: 3}

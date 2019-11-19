@@ -14,14 +14,14 @@ public class objectShows : MonoBehaviour
     public KMSelectable[] buttons;
     public Texture[] contesttextures;
     public Renderer[] buttonrenders;
-    public Material[] charactermats;
+    public Texture[] charactermats;
     public Material[] othermats;
     public Renderer contestname;
 
     private static readonly string[] contestnames = new string[16] {"wipeout", "underwater basket weaving", "water balloon fight", "cave diving", "chariot race", "equestrian acrobatics", "gladiatorial fight", "the objective games", "escape the volcano", "jungle survival", "tiger taming", "cliff climbing", "sack race", "interpretive dance", "nose nabbing", "calvinball" };
     private static readonly string[] ordinals = new string[6] {"first", "second", "third", "fourth", "fifth", "sixth"};
     private static readonly string[] placementordinals = new string[6] {"last", "fifth", "fourth", "third", "second", "first"};
-    private static readonly string[] charlists = new string[4] {"KI68QU9ZCPDSJMEVRAT1X53B427HLG0FWN", "CXD7SVI0NUTLJMQHERF45G2986P31KWZAB", "BMVF31QZ04SJ5GIW7H6A2EPRLNTKUDC98X", "MWC509QI31NSJB2FHUDXZ6PLV7TK8G4ERA"};
+    private static readonly string[] charlists = new string[4] {"KIO68QU9ZCPDSJMEVRAT1X53B427HLG0YFWN", "CYXD7SVI0NUTLJMQOHERF45G2986P31KWZAB", "BMVF31QZ0Y4SJ5GIW7H6A2EPRLNTKUDC98XO", "MWC509QI31NOSJB2FHUDXZ6PLV7TYK8G4ERA"};
     public string[] charnames;
 
     private int startingtime;
@@ -41,10 +41,6 @@ public class objectShows : MonoBehaviour
 		void Awake()
 		{
         moduleId = moduleIdCounter++;
-        startingtime = (int)bomb.GetTime();
-        startingday = (int)DateTime.Now.DayOfWeek;
-        if (startingday == 0)
-          startingday = 7;
         foreach (KMSelectable button in buttons)
         {
           button.OnInteract += delegate () { buttonPress(button); return false; };
@@ -57,7 +53,16 @@ public class objectShows : MonoBehaviour
         buttons[i].gameObject.SetActive(true);
       contestname.gameObject.SetActive(true);
       chosencharacters.Clear();
+      startingtime = (int)bomb.GetTime();
+      startingday = (int)DateTime.Now.DayOfWeek;
+      if (startingday == 0)
+        startingday = 7;
       stage = 0;
+      Reset();
+    }
+
+    void Reset()
+    {
       getAppeals();
       pickCharacters();
       getSolution();
@@ -77,7 +82,7 @@ public class objectShows : MonoBehaviour
         while (chosencharacters.Any(chr => chr.appeal == character.appeal))
           character.appeal++;
         chosencharacters.Add(character);
-        buttonrenders[i].material = charactermats[index];
+        buttonrenders[i].material.mainTexture = charactermats[index];
         Debug.LogFormat("[Object Shows #{0}] the {2} character is {1}, who has a public appeal of {3}.", moduleId, charnames[index], ordinals[i], character.appeal);
 		  }
     }
@@ -142,7 +147,7 @@ public class objectShows : MonoBehaviour
         else
           Audio.PlaySoundAtTransform("strike2", button.transform);
         Debug.LogFormat("[Object Shows #{0}] Strike! Resetting...", moduleId);
-        Start();
+        Reset();
       }
       else
       {
@@ -176,7 +181,7 @@ public class objectShows : MonoBehaviour
       publicappeals[3] = ser[2] - '0' + ser[5] - '0'; //Black Hole
       publicappeals[4] = bomb.GetPortCount(Port.Serial); //Block
       publicappeals[5] = bomb.GetIndicators().Count(); //Bulb
-      publicappeals[6] = (bomb.GetSerialNumberNumbers().Sum() - 1) % 9 + 1; //Calendar
+      publicappeals[6] = ((bomb.GetSerialNumberNumbers().Sum() - 1) % 9 )+ 1; //Calendar
       publicappeals[7] = bomb.GetPortCount(Port.Serial) + bomb.GetPortCount(Port.Parallel); //Clock
       publicappeals[8] = bomb.GetTwoFactorCounts(); //Combination Lock
       publicappeals[9] = bomb.GetModuleNames().Count() % 10; //Cookie Jar
@@ -197,7 +202,7 @@ public class objectShows : MonoBehaviour
       publicappeals[24] = bomb.GetModuleNames().Count(mdl => !mdl.ContainsIgnoreCase("e")); //Snooker Ball
       publicappeals[25] = bomb.GetBatteryCount(Battery.D); //Sphere
       publicappeals[26] = startingday; //Sticky Note
-      publicappeals[27] = (startingtime - 1) % 9 + 1; //Stopwatch
+      publicappeals[27] = ((startingtime - 1) % 9) + 1; //Stopwatch
       publicappeals[28] = bomb.GetModuleNames().Count(mdl => mdl.ContainsIgnoreCase("simon") || mdl.ContainsIgnoreCase("maze") || mdl.ContainsIgnoreCase("morse")); //Sun
       publicappeals[29] = (ser[3] - 'A' + 1) % 10; //Tennis Racket
     }
