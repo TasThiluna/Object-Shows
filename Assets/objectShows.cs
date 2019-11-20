@@ -15,7 +15,7 @@ public class objectShows : MonoBehaviour
     public Texture[] contesttextures;
     public Renderer[] buttonrenders;
     public Texture[] charactermats;
-    public Material[] othermats;
+    public Texture winner;
     public Renderer contestname;
 
     private static readonly string[] contestnames = new string[16] {"wipeout", "underwater basket weaving", "water balloon fight", "cave diving", "chariot race", "equestrian acrobatics", "gladiatorial fight", "the objective games", "escape the volcano", "jungle survival", "tiger taming", "cliff climbing", "sack race", "interpretive dance", "nose nabbing", "calvinball" };
@@ -27,42 +27,40 @@ public class objectShows : MonoBehaviour
     private int startingtime;
     private int startingday;
     private int stage;
-    private int typeindex;
-    private int styleindex;
     private Contestant[] solution;
     private int[] publicappeals = new int[30];
     private List <Contestant> chosencharacters = new List <Contestant>();
     private List <int> contests = new List <int>();
+    private List <int> unpressedbuttons;
 
-		static int moduleIdCounter = 1;
-		int moduleId;
+		private static int moduleIdCounter = 1;
+		private int moduleId;
 		private bool moduleSolved;
 
 		void Awake()
 		{
         moduleId = moduleIdCounter++;
         foreach (KMSelectable button in buttons)
-        {
           button.OnInteract += delegate () { buttonPress(button); return false; };
-        }
 		}
 
 		void Start()
 		{
-      for (int i = 0; i < 6; i++)
-        buttons[i].gameObject.SetActive(true);
-      contestname.gameObject.SetActive(true);
-      chosencharacters.Clear();
       startingtime = (int)bomb.GetTime();
       startingday = (int)DateTime.Now.DayOfWeek;
       if (startingday == 0)
         startingday = 7;
-      stage = 0;
       Reset();
     }
 
     void Reset()
     {
+      chosencharacters.Clear();
+      for (int i = 0; i < 6; i++)
+        buttons[i].gameObject.SetActive(true);
+      contestname.gameObject.SetActive(true);
+      stage = 0;
+      unpressedbuttons = Enumerable.Range(0,6).ToList();
       getAppeals();
       pickCharacters();
       getSolution();
@@ -71,6 +69,11 @@ public class objectShows : MonoBehaviour
 
     void pickCharacters()
     {
+      var ser = bomb.GetSerialNumber().ToCharArray();
+      var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      for (int i = 0; i < 6; i++)
+        while (ser.Take(i).Contains(ser[i]))
+          ser[i] = alphabet[(alphabet.IndexOf(ser[i]) + 1) % 36];
       int index;
       chosencharacters.Clear();
       for(int i = 0; i < 6; i++)
@@ -78,7 +81,7 @@ public class objectShows : MonoBehaviour
         index = UnityEngine.Random.Range(0,30);
         while(chosencharacters.Any(chr => chr.id == index))
           index = UnityEngine.Random.Range(0,30);
-        var character = new Contestant { id = index, pos = i, scores = new int[5], appeal = publicappeals[index] };
+        var character = new Contestant {id = index, pos = i, scores = new int[5], appeal = publicappeals[index], snchar = ser[i]};
         while (chosencharacters.Any(chr => chr.appeal == character.appeal))
           character.appeal++;
         chosencharacters.Add(character);
@@ -93,38 +96,43 @@ public class objectShows : MonoBehaviour
       public int pos;
       public int[] scores;
       public int appeal;
+      public char snchar;
     }
 
     void getSolution()
     {
-      var ser = bomb.GetSerialNumber().ToCharArray();
-      var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      for (int i = 0; i < 6; i++)
-        while (ser.Take(i).Contains(ser[i]))
-          ser[i] = alphabet[(alphabet.IndexOf(ser[i]) + 1) % 36];
       var currentcharacters = chosencharacters.ToList();
       solution = new Contestant[5];
+      var contestindices = Enumerable.Range(0,16).ToList().Shuffle();
       for (int i = 0; i < 5; i++)
       {
-          typeindex = rnd.Range(0,4);
-          styleindex = rnd.Range(0,4);
+          int contestindex = contestindices[i];
+          int typeindex = contestindex % 4;
+          int styleindex = contestindex / 4;
           if (i != 4)
           {
-            Debug.LogFormat("[Object Shows #{0}] the {2} contest is {1}.", moduleId, contestnames[styleindex * 4 + typeindex], ordinals[i]);
-            contests.Add(styleindex * 4 + typeindex);
+            Debug.LogFormat("[Object Shows #{0}] the {2} contest is {1}.", moduleId, contestnames[contestindex], ordinals[i]);
+            contests.Add(contestindex);
           }
           for (int j = 0; j < currentcharacters.Count; j++)
-            currentcharacters[j].scores[i] = charlists[typeindex].IndexOf(ser[j]);
+          {
+            if (styleindex == 2 || styleindex == 3)
+              currentcharacters[j].scores[i] = 35 - charlists[typeindex].IndexOf(currentcharacters[j].snchar);
+            else
+              currentcharacters[j].scores[i] = charlists[typeindex].IndexOf(currentcharacters[j].snchar);
+          }
           var sortedcharacters = currentcharacters.OrderBy(chr => chr.scores[i]).ToList();
-          if (styleindex == 2 || styleindex == 3)
-            sortedcharacters.Reverse();
           if (i < 3)
           {
             var lowestappeal = sortedcharacters.Take(i == 0 ? 3 : 2).Min(chr => chr.appeal);
+            Debug.LogFormat("[Object Shows #{0}] The scores are: {1}.", moduleId, sortedcharacters.Select(chr => charnames[chr.id] + " = " + chr.scores[i]).Join(", "));
             solution[i] = currentcharacters.First(chr => chr.appeal == lowestappeal);
           }
           else if (i == 3)
+          {
             solution[i] = sortedcharacters[0];
+            Debug.LogFormat("[Object Shows #{0}] The scores are: {1}.", moduleId, sortedcharacters.Select(chr => charnames[chr.id] + " = " + chr.scores[i]).Join(", "));
+          }
           else
           {
             var lowestappeal = sortedcharacters.Min(chr => chr.appeal);
@@ -163,11 +171,13 @@ public class objectShows : MonoBehaviour
         {
           contestname.gameObject.SetActive(false);
           Audio.PlaySoundAtTransform("elimination", button.transform);
+          unpressedbuttons.Remove(Array.IndexOf(buttons, button));
         }
         else
         {
           contestname.material.mainTexture = contesttextures[contests[stage]];
           Audio.PlaySoundAtTransform("elimination", button.transform);
+          unpressedbuttons.Remove(Array.IndexOf(buttons, button));
         }
       }
     }

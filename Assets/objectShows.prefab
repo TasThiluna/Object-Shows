@@ -1869,7 +1869,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 8d175711d9a404d4999a5a4fd997c25b, type: 3}
   - {fileID: 2800000, guid: 59d7dc93d24983940b48419770a56435, type: 3}
   - {fileID: 2800000, guid: 64ef581a669539e4381553f2138ea14c, type: 3}
-  othermats: []
+  winner: {fileID: 2800000, guid: f9397ad3b42168b488548cff60fce566, type: 3}
   contestname: {fileID: 23337842140856644}
   charnames:
   - Battleship
@@ -1940,7 +1940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Transparent/Mobile Diffuse Underlay200
 --- !u!114 &114938719766743428
 MonoBehaviour:
   m_ObjectHideFlags: 1
