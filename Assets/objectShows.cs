@@ -2,6 +2,7 @@ using System;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using KModkit;
 using rnd = UnityEngine.Random;
@@ -56,6 +57,7 @@ public class objectShows : MonoBehaviour
     void Reset()
     {
       chosencharacters.Clear();
+      contests.Clear();
       for (int i = 0; i < 6; i++)
         buttons[i].gameObject.SetActive(true);
       contestname.gameObject.SetActive(true);
@@ -64,7 +66,7 @@ public class objectShows : MonoBehaviour
       getAppeals();
       pickCharacters();
       getSolution();
-      contestname.material.mainTexture = contesttextures[contests[stage]];
+      contestname.material.mainTexture = contesttextures[contests[0]];
     }
 
     void pickCharacters()
@@ -215,5 +217,52 @@ public class objectShows : MonoBehaviour
       publicappeals[27] = ((startingtime - 1) % 9) + 1; //Stopwatch
       publicappeals[28] = bomb.GetModuleNames().Count(mdl => mdl.ContainsIgnoreCase("simon") || mdl.ContainsIgnoreCase("maze") || mdl.ContainsIgnoreCase("morse")); //Sun
       publicappeals[29] = (ser[3] - 'A' + 1) % 10; //Tennis Racket
+    }
+
+    //twitch plays
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} press <pos> [Presses the specified object in position 'pos'] | Valid object positions are tl, tr, ml, mr, bl, br";
+    #pragma warning restore 414
+
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        string[] parameters = command.Split(' ');
+        if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) || Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            if (parameters.Length == 2)
+            {
+                if (parameters[1].EqualsIgnoreCase("tl"))
+                {
+                    yield return null;
+                    buttons[0].OnInteract();
+                }
+                else if (parameters[1].EqualsIgnoreCase("tr"))
+                {
+                    yield return null;
+                    buttons[1].OnInteract();
+                }
+                else if (parameters[1].EqualsIgnoreCase("mr"))
+                {
+                    yield return null;
+                    buttons[2].OnInteract();
+                }
+                else if (parameters[1].EqualsIgnoreCase("br"))
+                {
+                    yield return null;
+                    buttons[3].OnInteract();
+                }
+                else if (parameters[1].EqualsIgnoreCase("bl"))
+                {
+                    yield return null;
+                    buttons[4].OnInteract();
+                }
+                else if (parameters[1].EqualsIgnoreCase("ml"))
+                {
+                    yield return null;
+                    buttons[5].OnInteract();
+                }
+            }
+            yield break;
+        }
     }
 }
