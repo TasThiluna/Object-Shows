@@ -49,8 +49,7 @@ public class objectShows : MonoBehaviour
 		{
       startingtime = (int)bomb.GetTime();
       startingday = (int)DateTime.Now.DayOfWeek;
-      if (startingday == 0)
-        startingday = 7;
+      startingday++;
       Reset();
     }
 
