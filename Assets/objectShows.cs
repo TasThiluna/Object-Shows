@@ -45,8 +45,8 @@ public class objectShows : MonoBehaviour
           button.OnInteract += delegate () { buttonPress(button); return false; };
 		}
 
-		void Start()
-		{
+	void Start()
+	{
       startingtime = (int)bomb.GetTime();
       startingday = (int)DateTime.Now.DayOfWeek;
       startingday++;
@@ -88,7 +88,7 @@ public class objectShows : MonoBehaviour
         chosencharacters.Add(character);
         buttonrenders[i].material.mainTexture = charactermats[index];
         Debug.LogFormat("[Object Shows #{0}] the {2} character is {1}, who has a public appeal of {3}.", moduleId, charnames[index], ordinals[i], character.appeal);
-		  }
+	  }
     }
 
     class Contestant
@@ -192,7 +192,7 @@ public class objectShows : MonoBehaviour
       publicappeals[3] = ser[2] - '0' + ser[5] - '0'; //Black Hole
       publicappeals[4] = bomb.GetPortCount(Port.Serial); //Block
       publicappeals[5] = bomb.GetIndicators().Count(); //Bulb
-      publicappeals[6] = ((bomb.GetSerialNumberNumbers().Sum() - 1) % 9 )+ 1; //Calendar
+      publicappeals[6] = ((bomb.GetSerialNumberNumbers().Sum() - 1) % 9 ) + 1; //Calendar
       publicappeals[7] = bomb.GetPortCount(Port.Serial) + bomb.GetPortCount(Port.Parallel); //Clock
       publicappeals[8] = bomb.GetTwoFactorCounts(); //Combination Lock
       publicappeals[9] = bomb.GetModuleNames().Count() % 10; //Cookie Jar
