@@ -9,8 +9,8 @@ using rnd = UnityEngine.Random;
 
 public class objectShows : MonoBehaviour
  {
-	 	public KMAudio Audio;
-		public KMBombInfo bomb;
+	public KMAudio Audio;
+	public KMBombInfo bomb;
 
     public KMSelectable[] buttons;
     public Texture[] contesttextures;
@@ -22,7 +22,7 @@ public class objectShows : MonoBehaviour
     private static readonly string[] contestnames = new string[16] {"wipeout", "underwater basket weaving", "water balloon fight", "cave diving", "chariot race", "equestrian acrobatics", "gladiatorial fight", "the objective games", "escape the volcano", "jungle survival", "tiger taming", "cliff climbing", "sack race", "interpretive dance", "nose nabbing", "calvinball" };
     private static readonly string[] ordinals = new string[6] {"first", "second", "third", "fourth", "fifth", "sixth"};
     private static readonly string[] placementordinals = new string[6] {"last", "fifth", "fourth", "third", "second", "first"};
-    private static readonly string[] charlists = new string[4] {"KIO68QU9ZCPDSJMEVRAT1X53B427HLG0YFWN", "CYXD7SVI0NUTLJMQOHERF45G2986P31KWZAB", "BMVF31QZ0Y4SJ5GIW7H6A2EPRLNTKUDC98XO", "MWC509QI31NOSJB2FHUDXZ6PLV7TYK8G4ERA"};
+    private static readonly string[] charlists = new string[4] {"KIO68QU9ZCPDSJMEVRAT1X53B427HLG0YFWN", "CYXD7SVI0NUTLJMQOHERF45G2986P31KWZAB", "BMVF31QZ0Y4SXJ5GIW7H6A2EPRLNTKUDC98O", "MWC509QI31NOSJB2FHUDXZ6PLV7TYK8G4ERA"};
     public string[] charnames;
 
     private int startingtime;
@@ -34,16 +34,16 @@ public class objectShows : MonoBehaviour
     private List <int> contests = new List <int>();
     private List <int> unpressedbuttons;
 
-		private static int moduleIdCounter = 1;
-		private int moduleId;
-		private bool moduleSolved;
+	private static int moduleIdCounter = 1;
+	private int moduleId;
+	private bool moduleSolved;
 
-		void Awake()
-		{
-        moduleId = moduleIdCounter++;
-        foreach (KMSelectable button in buttons)
-          button.OnInteract += delegate () { buttonPress(button); return false; };
-		}
+	void Awake()
+	{
+    	moduleId = moduleIdCounter++;
+    	foreach (KMSelectable button in buttons)
+    		button.OnInteract += delegate () { buttonPress(button); return false; };
+	}
 
 	void Start()
 	{
@@ -186,36 +186,36 @@ public class objectShows : MonoBehaviour
     void getAppeals()
     {
       var ser = bomb.GetSerialNumber();
-      publicappeals[0] = (bomb.GetBatteryCount() + bomb.GetIndicators().Count()) % 7; //Battleship
-      publicappeals[1] = bomb.GetModuleNames().Count() - bomb.GetSolvableModuleNames().Count(); //Beer
-      publicappeals[2] = bomb.GetPortCount(Port.Parallel) + bomb.GetPortCount(Port.DVI); //Big Circle
-      publicappeals[3] = ser[2] - '0' + ser[5] - '0'; //Black Hole
-      publicappeals[4] = bomb.GetPortCount(Port.Serial); //Block
-      publicappeals[5] = bomb.GetIndicators().Count(); //Bulb
-      publicappeals[6] = ((bomb.GetSerialNumberNumbers().Sum() - 1) % 9 ) + 1; //Calendar
-      publicappeals[7] = bomb.GetPortCount(Port.Serial) + bomb.GetPortCount(Port.Parallel); //Clock
-      publicappeals[8] = bomb.GetTwoFactorCounts(); //Combination Lock
-      publicappeals[9] = bomb.GetModuleNames().Count() % 10; //Cookie Jar
-      publicappeals[10] = bomb.GetOnIndicators().Count(); //Domino
-      publicappeals[11] = startingtime / 60; //Fidget Spinner
-      publicappeals[12] = bomb.GetBatteryCount(); //Hypercube
-      publicappeals[13] = ser[5] - '0'; //Ice Cream
-      publicappeals[14] = bomb.GetBatteryHolderCount(); //iPhone
-      publicappeals[15] = bomb.GetPortPlates().Count(); //Jack O' Lantern
-      publicappeals[16] = bomb.GetOffIndicators().Count(); //Lego
-      publicappeals[17] = bomb.GetPortCount(Port.PS2); //Moon
-      publicappeals[18] = (ser[4] - 'A' + 1) % 10; //Necronomicon
-      publicappeals[19] = bomb.GetIndicators().Count(ind => ser.Intersect(ind).Any()); //Paint Brush
-      publicappeals[20] = bomb.GetBatteryCount(Battery.AA); //Radio
-      publicappeals[21] = bomb.GetSerialNumberNumbers().Sum(); //Resistor
-      publicappeals[22] = (bomb.GetSerialNumberLetters().Select(let => let - 'A' + 1).Sum() - 1) % 9 + 1; //Rubik's Clock
-      publicappeals[23] = bomb.GetPortCount(Port.RJ45); //Rubik's Cube
-      publicappeals[24] = bomb.GetModuleNames().Count(mdl => !mdl.ContainsIgnoreCase("e")); //Snooker Ball
-      publicappeals[25] = bomb.GetBatteryCount(Battery.D); //Sphere
-      publicappeals[26] = startingday; //Sticky Note
-      publicappeals[27] = ((startingtime - 1) % 9) + 1; //Stopwatch
-      publicappeals[28] = bomb.GetModuleNames().Count(mdl => mdl.ContainsIgnoreCase("simon") || mdl.ContainsIgnoreCase("maze") || mdl.ContainsIgnoreCase("morse")); //Sun
-      publicappeals[29] = (ser[3] - 'A' + 1) % 10; //Tennis Racket
+      publicappeals[0] = (bomb.GetBatteryCount() + bomb.GetIndicators().Count()) % 7; // Battleship
+      publicappeals[1] = bomb.GetModuleNames().Count() - bomb.GetSolvableModuleNames().Count(); // Beer
+      publicappeals[2] = bomb.GetPortCount(Port.Parallel) + bomb.GetPortCount(Port.DVI); // Big Circle
+      publicappeals[3] = ser[2] - '0' + ser[5] - '0'; // Black Hole
+      publicappeals[4] = bomb.GetPortCount(Port.Serial); // Block
+      publicappeals[5] = bomb.GetIndicators().Count(); // Bulb
+      publicappeals[6] = ((bomb.GetSerialNumberNumbers().Sum() - 1) % 9 ) + 1; // Calendar
+      publicappeals[7] = bomb.GetPortCount(Port.Serial) + bomb.GetPortCount(Port.Parallel); // Clock
+      publicappeals[8] = bomb.GetTwoFactorCounts(); // Combination Lock
+      publicappeals[9] = bomb.GetModuleNames().Count() % 10; // Cookie Jar
+      publicappeals[10] = bomb.GetOnIndicators().Count(); // Domino
+      publicappeals[11] = startingtime / 60; // Fidget Spinner
+      publicappeals[12] = bomb.GetBatteryCount(); // Hypercube
+      publicappeals[13] = ser[5] - '0'; // Ice Cream
+      publicappeals[14] = bomb.GetBatteryHolderCount(); // iPhone
+      publicappeals[15] = bomb.GetPortPlates().Count(); // Jack O' Lantern
+      publicappeals[16] = bomb.GetOffIndicators().Count(); // Lego
+      publicappeals[17] = bomb.GetPortCount(Port.PS2); // Moon
+      publicappeals[18] = (ser[4] - 'A' + 1) % 10; // Necronomicon
+      publicappeals[19] = bomb.GetIndicators().Count(ind => ser.Intersect(ind).Any()); // Paint Brush
+      publicappeals[20] = bomb.GetBatteryCount(Battery.AA); // Radio
+      publicappeals[21] = bomb.GetSerialNumberNumbers().Sum(); // Resistor
+      publicappeals[22] = (bomb.GetSerialNumberLetters().Select(let => let - 'A' + 1).Sum() - 1) % 9 + 1; // Rubik's Clock
+      publicappeals[23] = bomb.GetPortCount(Port.RJ45); // Rubik's Cube
+      publicappeals[24] = bomb.GetModuleNames().Count(mdl => new string[] { "color", "colour", "colo(u)r", "red", "orange", "yellow", "green", "blue", "indigo", "violet", "purple", "white", "gray", "grey", "black" }.Any(s => mdl.ContainsIgnoreCase(s))); // Snooker Ball
+      publicappeals[25] = bomb.GetBatteryCount(Battery.D); // Sphere
+      publicappeals[26] = startingday; // Sticky Note
+      publicappeals[27] = ((startingtime - 1) % 9) + 1; // Stopwatch
+      publicappeals[28] = bomb.GetModuleNames().Count(mdl => mdl.ContainsIgnoreCase("simon") || mdl.ContainsIgnoreCase("maze") || mdl.ContainsIgnoreCase("morse")); // Sun
+      publicappeals[29] = (ser[3] - 'A' + 1) % 10; // Tennis Racket
     }
 
     //twitch plays
