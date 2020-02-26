@@ -80,7 +80,6 @@ public class objectShows : MonoBehaviour
         for (int i = 0; i < 6; i++)
         {
             index = UnityEngine.Random.Range(0, 30);
-            index = UnityEngine.Random.Range(0, 30);
             while (chosencharacters.Any(chr => chr.id == index))
                 index = UnityEngine.Random.Range(0, 30);
             var character = new Contestant { id = index, pos = i, scores = new int[5], appeal = publicappeals[index], snchar = ser[i] };
