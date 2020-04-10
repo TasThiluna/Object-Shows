@@ -210,7 +210,7 @@ public class objectShows : MonoBehaviour
         publicappeals[21] = bomb.GetSerialNumberNumbers().Sum(); // Resistor
         publicappeals[22] = (bomb.GetSerialNumberLetters().Select(let => let - 'A' + 1).Sum() - 1) % 9 + 1; // Rubik's Clock
         publicappeals[23] = bomb.GetPortCount(Port.RJ45); // Rubik's Cube
-        publicappeals[24] = bomb.GetModuleNames().Count(mdl => new string[] { "color", "colour", "colo(u)r", "red", "orange", "yellow", "green", "blue", "indigo", "violet", "purple", "white", "gray", "grey", "black" }.Any(s => mdl.ContainsIgnoreCase(s))); // Snooker Ball
+        publicappeals[24] = bomb.GetModuleNames().Count(mdl => new string[] { "color", "colour", "colo(u)r" }.Any(s => mdl.ContainsIgnoreCase(s))); // Snooker Ball
         publicappeals[25] = bomb.GetBatteryCount(Battery.D); // Sphere
         publicappeals[26] = startingday; // Sticky Note
         publicappeals[27] = ((startingtime - 1) % 9) + 1; // Stopwatch
@@ -219,14 +219,14 @@ public class objectShows : MonoBehaviour
     }
 
     // Twitch Plays
-#pragma warning disable 414
+    #pragma warning disable 414
     private readonly string TwitchHelpMessage = @"!{0} press <pos> [Presses the specified object in position 'pos'] | Valid object positions are tl, tr, ml, mr, bl, br";
-#pragma warning restore 414
+    #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] parameters = command.Split(' ');
-        if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) || Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
         {
             if (parameters.Length == 2)
             {
