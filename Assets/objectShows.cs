@@ -146,39 +146,43 @@ public class objectShows : MonoBehaviour
 
     void buttonPress(KMSelectable button)
     {
-        button.AddInteractionPunch(.5f);
-        if (chosencharacters[Array.IndexOf(buttons, button)] != solution[stage])
+        if (!moduleSolved)
         {
-            GetComponent<KMBombModule>().HandleStrike();
-            var si = UnityEngine.Random.Range(0, 2);
-            if (si == 0)
-                Audio.PlaySoundAtTransform("strike1", button.transform);
-            else
-                Audio.PlaySoundAtTransform("strike2", button.transform);
-            Debug.LogFormat("[Object Shows #{0}] Strike! Resetting...", moduleId);
-            Reset();
-        }
-        else
-        {
-            button.gameObject.SetActive(false);
-            stage++;
-            if (stage == 5)
+            button.AddInteractionPunch(.5f);
+            if (chosencharacters[Array.IndexOf(buttons, button)] != solution[stage])
             {
-                GetComponent<KMBombModule>().HandlePass();
-                Audio.PlaySoundAtTransform("solve1", button.transform);
-                Debug.LogFormat("[Object Shows #{0}] Module solved.", moduleId);
-            }
-            else if (stage == 4)
-            {
-                contestname.gameObject.SetActive(false);
-                Audio.PlaySoundAtTransform("elimination", button.transform);
-                unpressedbuttons.Remove(Array.IndexOf(buttons, button));
+                GetComponent<KMBombModule>().HandleStrike();
+                var si = UnityEngine.Random.Range(0, 2);
+                if (si == 0)
+                    Audio.PlaySoundAtTransform("strike1", transform);
+                else
+                    Audio.PlaySoundAtTransform("strike2", transform);
+                Debug.LogFormat("[Object Shows #{0}] Strike! Resetting...", moduleId);
+                Reset();
             }
             else
             {
-                contestname.material.mainTexture = contesttextures[contests[stage]];
-                Audio.PlaySoundAtTransform("elimination", button.transform);
-                unpressedbuttons.Remove(Array.IndexOf(buttons, button));
+                button.gameObject.SetActive(false);
+                stage++;
+                if (stage == 5)
+                {
+                    moduleSolved = true;
+                    GetComponent<KMBombModule>().HandlePass();
+                    Audio.PlaySoundAtTransform("solve1", transform);
+                    Debug.LogFormat("[Object Shows #{0}] Module solved.", moduleId);
+                }
+                else if (stage == 4)
+                {
+                    contestname.gameObject.SetActive(false);
+                    Audio.PlaySoundAtTransform("elimination", button.transform);
+                    unpressedbuttons.Remove(Array.IndexOf(buttons, button));
+                }
+                else
+                {
+                    contestname.material.mainTexture = contesttextures[contests[stage]];
+                    Audio.PlaySoundAtTransform("elimination", button.transform);
+                    unpressedbuttons.Remove(Array.IndexOf(buttons, button));
+                }
             }
         }
     }
@@ -222,46 +226,63 @@ public class objectShows : MonoBehaviour
     #pragma warning disable 414
     private readonly string TwitchHelpMessage = @"!{0} press <pos> [Presses the specified object in position 'pos'] | Valid object positions are tl, tr, ml, mr, bl, br";
     #pragma warning restore 414
-
+    
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] parameters = command.Split(' ');
         if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
         {
-            if (parameters.Length == 2)
+            yield return null;
+            if (parameters.Length > 2)
+            {
+                yield return "sendtochaterror Too many parameters!";
+            }
+            else if (parameters.Length == 2)
             {
                 if (parameters[1].EqualsIgnoreCase("tl"))
                 {
-                    yield return null;
                     buttons[0].OnInteract();
                 }
                 else if (parameters[1].EqualsIgnoreCase("tr"))
                 {
-                    yield return null;
                     buttons[1].OnInteract();
                 }
                 else if (parameters[1].EqualsIgnoreCase("mr"))
                 {
-                    yield return null;
                     buttons[2].OnInteract();
                 }
                 else if (parameters[1].EqualsIgnoreCase("br"))
                 {
-                    yield return null;
                     buttons[3].OnInteract();
                 }
                 else if (parameters[1].EqualsIgnoreCase("bl"))
                 {
-                    yield return null;
                     buttons[4].OnInteract();
                 }
                 else if (parameters[1].EqualsIgnoreCase("ml"))
                 {
-                    yield return null;
                     buttons[5].OnInteract();
                 }
+                else
+                {
+                    yield return "sendtochaterror The specified position of the object to press '" + parameters[1] + "' is invalid!";
+                }
+            }
+            else if (parameters.Length == 1)
+            {
+                yield return "sendtochaterror Please specify the position of the object to press!";
             }
             yield break;
+        }
+    }
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        int start = solution.Length - (unpressedbuttons.Count() - 1);
+        for (int i = start; i < solution.Length; i++)
+        {
+            buttons[solution[i].pos].OnInteract();
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }
