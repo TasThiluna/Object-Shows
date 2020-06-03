@@ -9,8 +9,9 @@ using rnd = UnityEngine.Random;
 
 public class objectShows : MonoBehaviour
 {
-    public KMAudio Audio;
+    public new KMAudio audio;
     public KMBombInfo bomb;
+    public KMBombModule module;
 
     public KMSelectable[] buttons;
     public Texture[] contesttextures;
@@ -62,13 +63,13 @@ public class objectShows : MonoBehaviour
         contestname.gameObject.SetActive(true);
         stage = 0;
         unpressedbuttons = Enumerable.Range(0, 6).ToList();
-        getAppeals();
-        pickCharacters();
-        getSolution();
+        GetAppeals();
+        PickCharacters();
+        GetSolution();
         contestname.material.mainTexture = contesttextures[contests[0]];
     }
 
-    void pickCharacters()
+    void PickCharacters()
     {
         var ser = bomb.GetSerialNumber().ToCharArray();
         var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -100,7 +101,7 @@ public class objectShows : MonoBehaviour
         public char snchar;
     }
 
-    void getSolution()
+    void GetSolution()
     {
         var currentcharacters = chosencharacters.ToList();
         solution = new Contestant[5];
@@ -151,12 +152,8 @@ public class objectShows : MonoBehaviour
             button.AddInteractionPunch(.5f);
             if (chosencharacters[Array.IndexOf(buttons, button)] != solution[stage])
             {
-                GetComponent<KMBombModule>().HandleStrike();
-                var si = UnityEngine.Random.Range(0, 2);
-                if (si == 0)
-                    Audio.PlaySoundAtTransform("strike1", transform);
-                else
-                    Audio.PlaySoundAtTransform("strike2", transform);
+                module.HandleStrike();
+                audio.PlaySoundAtTransform("strike" + rnd.Range(1, 3), transform);
                 Debug.LogFormat("[Object Shows #{0}] Strike! Resetting...", moduleId);
                 Reset();
             }
@@ -167,27 +164,27 @@ public class objectShows : MonoBehaviour
                 if (stage == 5)
                 {
                     moduleSolved = true;
-                    GetComponent<KMBombModule>().HandlePass();
-                    Audio.PlaySoundAtTransform("solve1", transform);
+                    module.HandlePass();
+                    audio.PlaySoundAtTransform("solve1", transform);
                     Debug.LogFormat("[Object Shows #{0}] Module solved.", moduleId);
                 }
                 else if (stage == 4)
                 {
                     contestname.gameObject.SetActive(false);
-                    Audio.PlaySoundAtTransform("elimination", button.transform);
+                    audio.PlaySoundAtTransform("elimination", button.transform);
                     unpressedbuttons.Remove(Array.IndexOf(buttons, button));
                 }
                 else
                 {
                     contestname.material.mainTexture = contesttextures[contests[stage]];
-                    Audio.PlaySoundAtTransform("elimination", button.transform);
+                    audio.PlaySoundAtTransform("elimination", button.transform);
                     unpressedbuttons.Remove(Array.IndexOf(buttons, button));
                 }
             }
         }
     }
 
-    void getAppeals()
+    void GetAppeals()
     {
         var ser = bomb.GetSerialNumber();
         publicappeals[0] = (bomb.GetBatteryCount() + bomb.GetIndicators().Count()) % 7; // Battleship
@@ -226,7 +223,7 @@ public class objectShows : MonoBehaviour
     #pragma warning disable 414
     private readonly string TwitchHelpMessage = @"!{0} press <pos> [Presses the specified object in position 'pos'] | Valid object positions are tl, tr, ml, mr, bl, br";
     #pragma warning restore 414
-    
+
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] parameters = command.Split(' ');

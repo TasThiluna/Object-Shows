@@ -49,10 +49,6 @@ public class TestHighlightable : MonoBehaviour
             highlight.transform.localRotation = Quaternion.identity;
 
             MeshFilter meshFilter = highlight.AddComponent<MeshFilter>();
-
-            if (GetComponent<MeshFilter>().sharedMesh == null)
-                Debug.LogFormat("null: " + highlight.name);
-
             meshFilter.mesh = Instantiate(GetComponent<MeshFilter>().sharedMesh) as Mesh;
 
             int materialCount = 1;

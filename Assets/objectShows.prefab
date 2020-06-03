@@ -1805,8 +1805,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32d10398e659b854f8bca347344df00f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Audio: {fileID: 114362555509535318}
+  audio: {fileID: 114362555509535318}
   bomb: {fileID: 114212602564178874}
+  module: {fileID: 114221075226099596}
   buttons:
   - {fileID: 114451924821290186}
   - {fileID: 114939898333193430}
