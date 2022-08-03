@@ -13,11 +13,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: objectShows
   title: Object Shows
-  author: TasThing
+  author: TasThiluna
   description: "According to my imagination, 99.8% of all bombs are detonated within
-    2 seconds of being started!\r\n\r\nModule idea and implementation by TasThing.\r\nBased
-    on BFDI.\r\nThanks to EpicToast for the contestant graphics.\r\n\r\nManual HTML:
-    https://ktane.timwi.de/HTML/Object%20Shows.html\r\nManual PDF: https://ktane.timwi.de/PDF/Object%20Shows.pdf"
-  version: 1.2.3
+    2 seconds of being started!\r\n\r\nModule idea and implementation by TasThiluna.\r\nBased
+    on BFDI.\r\nThanks to EpicToast for the contestant graphics.\r\n\r\n[url=https://ktane.timwi.de/HTML/Object%20Shows.html\r]Manual
+    HTML[/url]\n[url=https://ktane.timwi.de/PDF/Object%20Shows.pdf]Manual PDF[/url]"
+  version: 1.2.4
   outputFolder: build
   previewImage: {fileID: 2800000, guid: d025902abd917824a81221e9c280ee24, type: 3}
