@@ -216,6 +216,8 @@ public partial class objectShows : MonoBehaviour
     {
         var elapsed = 0f;
         var duration = .75f;
+        foreach (KMSelectable button in buttons)
+            button.Highlight.gameObject.SetActive(false);
         var finalButton = buttons[Enumerable.Range(0, 6).Where(x => !solution.Select(chr => chr.pos).ToArray().Contains(x)).First()].transform;
         finalButton.SetParent(dummy);
         var startPosition = finalButton.localPosition;
