@@ -1852,7 +1852,7 @@ MonoBehaviour:
   - {fileID: 114439922189708402}
   contesttextures:
   - {fileID: 2800000, guid: 8c37c5d7a29ce784d98f7d5f05879da4, type: 3}
-  - {fileID: 2800000, guid: 2178ebd8f633b614badfaabfa5821ba9, type: 3}
+  - {fileID: 2800000, guid: c96a404764769a0438023aa06efa165a, type: 3}
   - {fileID: 2800000, guid: e8876c913c176664e9618420f9b2bd57, type: 3}
   - {fileID: 2800000, guid: 335ea28de5184404b93cfd4823d16bac, type: 3}
   - {fileID: 2800000, guid: 3eb5588869950d94986d2302cc9a575f, type: 3}

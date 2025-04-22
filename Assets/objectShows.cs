@@ -21,7 +21,7 @@ public partial class objectShows : MonoBehaviour
     public Renderer contestname;
     public Transform dummy;
 
-    private static readonly string[] contestNames = new[] { "wipeout", "underwater basket weaving", "water balloon fight", "cave diving", "chariot race", "equestrian acrobatics", "gladiatorial fight", "the objective games", "escape the volcano", "jungle survival", "tiger taming", "cliff climbing", "sack race", "interpretive dance", "nose nabbing", "calvinball" };
+    private static readonly string[] contestNames = new[] { "wipeout", "ice sculptures", "water balloon fight", "cave diving", "chariot race", "equestrian acrobatics", "gladiatorial fight", "the objective games", "escape the volcano", "jungle survival", "tiger taming", "cliff climbing", "sack race", "interpretive dance", "nose nabbing", "calvinball" };
     private static readonly string[] ordinals = new[] { "first", "second", "third", "fourth", "fifth", "sixth" };
     private static readonly string[] placementOrdinals = new[] { "last", "fifth", "fourth", "third", "second", "first" };
     private static readonly string[] contestStrings = new[] { "KIO68QU9ZCPDSJMEVRAT1X53B427HLG0YFWN", "CYXD7SVI0NUTLJMQOHERF45G2986P31KWZAB", "BMVF31QZ0Y4SXJ5GIW7H6A2EPRLNTKUDC98O", "MWC509QI31NOSJB2FHUDXZ6PLV7TYK8G4ERA" };
